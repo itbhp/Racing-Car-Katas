@@ -41,9 +41,26 @@ public class AlarmTest {
     void pressure_below_low_threshold_should_set_alarm_on(double pressure) {
 
         Alarm alarm = anAlarmWith(new StubRandomSensor(pressure));
-        // reflection
         alarm.check();
         assertTrue(alarm.isAlarmOn());
+    }
+
+    @ParameterizedTest(name = "alarm is on when pressure is {0}")
+    @ValueSource(doubles = {21.1d, 22.0d, 23.0d})
+    void pressure_above_upper_threshold_should_set_alarm_on(double pressure) {
+
+        Alarm alarm = anAlarmWith(new StubRandomSensor(pressure));
+        alarm.check();
+        assertTrue(alarm.isAlarmOn());
+    }
+
+    @ParameterizedTest(name = "alarm is off when pressure is {0}")
+    @ValueSource(doubles = {17.0d, 18.0d, 20.0d, 17.0d})
+    void pressure_in_range_alarm_is_off(double pressure) {
+
+        Alarm alarm = anAlarmWith(new StubRandomSensor(pressure));
+        alarm.check();
+        assertFalse(alarm.isAlarmOn());
     }
 
     static class TestableAlarm extends Alarm {
