@@ -2,10 +2,10 @@ package tddmicroexercises.tirepressuremonitoringsystem;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tddmicroexercises.tirepressuremonitoringsystem.AlarmTest.TestableAlarm.anAlarmWith;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class AlarmTest {
@@ -40,23 +40,26 @@ public class AlarmTest {
     @ValueSource(doubles = {16.0d, 16.9d, 15.9d})
     void pressure_below_low_threshold_should_set_alarm_on(double pressure) {
 
-        Alarm alarm = new TestableAlarm(new StubSensor(pressure));
+        Alarm alarm = anAlarmWith(new StubRandomSensor(pressure));
         // reflection
         alarm.check();
         assertTrue(alarm.isAlarmOn());
     }
 
     static class TestableAlarm extends Alarm {
-
-        public TestableAlarm(Sensor sensor) {
+        private TestableAlarm(RandomSensor sensor) {
             this.sensor = sensor;
+        }
+
+        public static Alarm anAlarmWith(RandomSensor sensor){
+            return new TestableAlarm(sensor);
         }
     }
 
-    static class StubSensor extends Sensor {
+    static class StubRandomSensor extends RandomSensor {
         private final double fixedValue;
 
-        StubSensor(double fixedValue) {
+        StubRandomSensor(double fixedValue) {
             this.fixedValue = fixedValue;
         }
 
