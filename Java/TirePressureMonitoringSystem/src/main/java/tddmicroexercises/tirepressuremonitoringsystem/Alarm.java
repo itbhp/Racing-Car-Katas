@@ -12,8 +12,8 @@ public class Alarm
 
     /*
       class Alarm, class Sensor
-      Alarm -> Sensor
-      RandomSensor -> Sensor
+      Alarm -> Sensor (abstract to concrete)
+      class Alarm -> interface Sensor <- class RandomSensor (dependency inversion, concrete depends on abstract)
      */
 
     private static final double LOW_PRESSURE_THRESHOLD = 17;
