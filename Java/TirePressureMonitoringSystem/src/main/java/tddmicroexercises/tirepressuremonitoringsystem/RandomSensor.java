@@ -19,7 +19,6 @@ public class RandomSensor implements Sensor {
     private static double samplePressure() {
         // placeholder implementation that simulate a real sensor in a real tire
         Random basicRandomNumbersGenerator = new Random();
-        double pressureTelemetryValue = 6 * basicRandomNumbersGenerator.nextDouble() * basicRandomNumbersGenerator.nextDouble();
-        return pressureTelemetryValue;
+        return 6 * basicRandomNumbersGenerator.nextDouble() * basicRandomNumbersGenerator.nextDouble();
     }
 }

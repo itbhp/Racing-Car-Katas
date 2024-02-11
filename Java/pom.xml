@@ -86,7 +86,6 @@
                     <target>${java.version}</target>
                     <release>${java.version}</release>
                     <compilerVersion>${java.version}</compilerVersion>
-                    <!--                    <compilerArgs>&#45;&#45;enable-preview</compilerArgs>-->
                     <debug>true</debug>
                     <showWarnings>true</showWarnings>
                 </configuration>

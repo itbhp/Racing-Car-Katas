@@ -13,6 +13,7 @@ public class Alarm
     /*
       class Alarm, class Sensor
       Alarm -> Sensor
+      RandomSensor -> Sensor
      */
 
     private static final double LOW_PRESSURE_THRESHOLD = 17;
@@ -22,15 +23,11 @@ public class Alarm
 
     protected boolean alarmOn = false;
 
-    public static Alarm anAlarm(){
-        return new Alarm();
-    }
-
     public void check()
     {
         double psiPressureValue = sensor.popNextPressurePsiValue();
 
-        if (psiPressureValue < LOW_PRESSURE_THRESHOLD || HIGH_PRESSURE_THRESHOLD < psiPressureValue)
+        if (psiPressureValue < LOW_PRESSURE_THRESHOLD || psiPressureValue > HIGH_PRESSURE_THRESHOLD)
         {
             alarmOn = true;
         }
