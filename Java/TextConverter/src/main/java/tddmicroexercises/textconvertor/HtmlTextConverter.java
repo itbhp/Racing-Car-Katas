@@ -8,6 +8,13 @@ public class HtmlTextConverter
 {
     private String fullFilenameWithPath;
 
+	/*
+	  Solid principles violations
+	  - SRP (converting and reading a file)
+	  - OCP (strategy of conversion right now is fixed, it cannot be extended)
+	  - Dependency inversion (the reading of the file is to concrete)
+	 */
+
     public HtmlTextConverter(String fullFilenameWithPath)
     {
         this.fullFilenameWithPath = fullFilenameWithPath;
