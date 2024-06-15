@@ -1,14 +1,17 @@
 package tddmicroexercises.turnticketdispenser;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Stream;
+
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TicketDispenserTest {
 
@@ -47,26 +50,17 @@ class TicketDispenserTest {
             try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
                 TicketDispenser dispenser = new TicketDispenser();
                 TicketDispenser anotherDispenser = new TicketDispenser();
-                Callable<TurnTicket> dispenserTicket = dispenser::getTurnTicket;
-                Callable<TurnTicket> anotherDispenserTicket = anotherDispenser::getTurnTicket;
-                List<Future<TurnTicket>> futures = executorService.invokeAll(List.of(dispenserTicket, anotherDispenserTicket));
-                List<Integer> numbers = futures.stream()
-                        .map(TicketDispenserTest::getTurnTicket)
-                        .map(TurnTicket::getTurnNumber)
-                        .toList();
-//                System.out.println("execution i: " + i + " numbers: " + numbers);
-                assertThat(numbers, Matchers.containsInAnyOrder(0, 1));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                CompletableFuture<TurnTicket> dispenserFutureTicket =
+                        supplyAsync(dispenser::getTurnTicket, executorService);
+                CompletableFuture<TurnTicket> anotherDispenserFutureTicket =
+                        supplyAsync(anotherDispenser::getTurnTicket, executorService);
+                List<Integer> numbers = Stream.of(dispenserFutureTicket, anotherDispenserFutureTicket)
+                        .map(CompletableFuture::join)
+                        .map(TurnTicket::getTurnNumber).toList();
+                assertThat("Expected list with 2 elements, actual: " + numbers, numbers, hasSize(2));
+                assertThat("Expected list containing 0 and 1 and actual: " + numbers, numbers, hasItems(0, 1));
             }
         }
     }
 
-    private static TurnTicket getTurnTicket(Future<TurnTicket> f) {
-        try {
-            return f.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
