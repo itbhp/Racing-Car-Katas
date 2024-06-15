@@ -14,13 +14,13 @@ class HtmlTextConverterTest {
 
     @Test
     void it_should_convert_a_one_line_file() throws IOException {
-        HtmlTextConverter converter = new HtmlTextConverter(RESOURCES_DIR + "one-line.txt");
+        HtmlTextConverter converter = new HtmlTextConverter(new FileReaderLinesProvider(RESOURCES_DIR + "one-line.txt"));
         assertEquals("The quick brown fox jumps over the lazy dog" + DEFAULT_HTML_NEWLINE, converter.convertToHtml());
     }
 
     @Test
     void it_should_convert_a_multiple_lines_file() throws IOException {
-        HtmlTextConverter converter = new HtmlTextConverter(RESOURCES_DIR + "multiple-lines.txt");
+        HtmlTextConverter converter = new HtmlTextConverter(new FileReaderLinesProvider(RESOURCES_DIR + "multiple-lines.txt"));
         assertEquals("The quick brown fox jumps over the lazy dog" + DEFAULT_HTML_NEWLINE
                 + "The quick brown fox jumps over the lazy dog" + DEFAULT_HTML_NEWLINE
                 + "The quick brown fox jumps over the lazy dog" + DEFAULT_HTML_NEWLINE
@@ -29,7 +29,7 @@ class HtmlTextConverterTest {
 
     @Test
     void it_should_convert_a_file_with_escape_characters() throws IOException {
-        HtmlTextConverter converter = new HtmlTextConverter(RESOURCES_DIR + "escape.txt");
+        HtmlTextConverter converter = new HtmlTextConverter(new FileReaderLinesProvider(RESOURCES_DIR + "escape.txt"));
         assertEquals("&amp;" + DEFAULT_HTML_NEWLINE
                 +"&lt;" + DEFAULT_HTML_NEWLINE
                 +"&gt;" + DEFAULT_HTML_NEWLINE
