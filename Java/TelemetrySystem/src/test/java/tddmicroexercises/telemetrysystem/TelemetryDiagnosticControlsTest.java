@@ -40,4 +40,27 @@ public class TelemetryDiagnosticControlsTest
         }
     }
 
+    @Test
+    void cannot_connect_to_the_telemetry_system() {
+        TelemetryDiagnosticControls underTest = new TestableDiagnosticControl(false);
+        try {
+            underTest.checkTransmission();
+            fail("it got unexpectedly the connection");
+        } catch (Exception e) {
+            assertEquals("Unable to connect.", e.getMessage());
+        }
+    }
+
+    private static class TestableDiagnosticControl extends TelemetryDiagnosticControls {
+        private final boolean online;
+
+        private TestableDiagnosticControl(boolean online) {
+            this.online = online;
+        }
+
+        @Override
+        protected boolean isOnlineStatus() {
+            return online;
+        }
+    }
 }
