@@ -1,9 +1,14 @@
 package tddmicroexercises.telemetrysystem;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 
+@ExtendWith(MockitoExtension.class)
 public class TelemetryDiagnosticControlsTest
 {
 
@@ -13,10 +18,14 @@ public class TelemetryDiagnosticControlsTest
      * 4. happy path: it receives the diagnostic message
      */
 
+    @Mock
+    private TelemetryClient telemetryClient;
+
     @Test
     public void CheckTransmission_should_send_a_diagnostic_message_and_receive_a_status_message_response()
     {
-        TelemetryDiagnosticControls telemetryDiagnosticControls = new TelemetryDiagnosticControls();
+        TelemetryDiagnosticControls telemetryDiagnosticControls =
+                new TelemetryDiagnosticControls(new TelemetryClient());
 
         try {
             telemetryDiagnosticControls.checkTransmission();
@@ -42,25 +51,15 @@ public class TelemetryDiagnosticControlsTest
 
     @Test
     void cannot_connect_to_the_telemetry_system() {
-        TelemetryDiagnosticControls underTest = new TestableDiagnosticControl(false);
+        given(telemetryClient.getOnlineStatus()).willReturn(false);
+
+        TelemetryDiagnosticControls underTest = new TelemetryDiagnosticControls(telemetryClient);
+
         try {
             underTest.checkTransmission();
             fail("it got unexpectedly the connection");
         } catch (Exception e) {
             assertEquals("Unable to connect.", e.getMessage());
-        }
-    }
-
-    private static class TestableDiagnosticControl extends TelemetryDiagnosticControls {
-        private final boolean online;
-
-        private TestableDiagnosticControl(boolean online) {
-            this.online = online;
-        }
-
-        @Override
-        protected boolean isOnlineStatus() {
-            return online;
         }
     }
 }

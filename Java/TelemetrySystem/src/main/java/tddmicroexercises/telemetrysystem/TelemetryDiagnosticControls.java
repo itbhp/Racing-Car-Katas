@@ -6,8 +6,8 @@ public class TelemetryDiagnosticControls {
     private final TelemetryClient telemetryClient;
     private String diagnosticInfo = "";
 
-    public TelemetryDiagnosticControls() {
-        telemetryClient = new TelemetryClient();
+    public TelemetryDiagnosticControls(TelemetryClient client) {
+        telemetryClient = client;
     }
 
     public String getDiagnosticInfo() {
