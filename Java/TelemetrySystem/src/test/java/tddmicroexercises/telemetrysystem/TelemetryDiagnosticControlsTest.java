@@ -9,8 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class TelemetryDiagnosticControlsTest
-{
+public class TelemetryDiagnosticControlsTest {
 
     /**
      * 1. connection error
@@ -22,8 +21,7 @@ public class TelemetryDiagnosticControlsTest
     private TelemetryClient telemetryClient;
 
     @Test
-    public void CheckTransmission_should_send_a_diagnostic_message_and_receive_a_status_message_response()
-    {
+    public void CheckTransmission_should_send_a_diagnostic_message_and_receive_a_status_message_response() {
         TelemetryDiagnosticControls telemetryDiagnosticControls =
                 new TelemetryDiagnosticControls(new TelemetryClient());
 
@@ -61,5 +59,19 @@ public class TelemetryDiagnosticControlsTest
         } catch (Exception e) {
             assertEquals("Unable to connect.", e.getMessage());
         }
+    }
+
+    @Test
+    void can_connect_after_retries_to_the_telemetry_system() throws Exception {
+        given(telemetryClient.getOnlineStatus())
+                .willReturn(false)
+                .willReturn(false)
+                .willReturn(true);
+        given(telemetryClient.receive()).willReturn("a telemetry string");
+
+        TelemetryDiagnosticControls underTest = new TelemetryDiagnosticControls(telemetryClient);
+
+        underTest.checkTransmission();
+        assertEquals("a telemetry string", underTest.getDiagnosticInfo());
     }
 }
