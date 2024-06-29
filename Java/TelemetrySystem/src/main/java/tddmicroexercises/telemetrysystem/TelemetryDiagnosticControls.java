@@ -19,20 +19,28 @@ public class TelemetryDiagnosticControls
         public void setDiagnosticInfo(String diagnosticInfo){
             this.diagnosticInfo = diagnosticInfo;
         }
- 
-        public void checkTransmission() throws Exception
+
+    /*
+     * A.disconnect() -> B.connect() -> C.send() -> D.receive()
+     *
+     * temporal coupling -> action A should happen before action B
+     *
+     *
+     */
+
+    public void checkTransmission() throws Exception
         {
             diagnosticInfo = "";
 
             telemetryClient.disconnect();
-    
+
             int retryLeft = 3;
             while (telemetryClient.getOnlineStatus() == false && retryLeft > 0)
             {
                 telemetryClient.connect(DiagnosticChannelConnectionString);
                 retryLeft -= 1;
             }
-             
+
             if(telemetryClient.getOnlineStatus() == false)
             {
                 throw new Exception("Unable to connect.");
